@@ -1,0 +1,3 @@
+PROGRAM=/usr/sbin/ponoff
+SESSION=true
+. config-util

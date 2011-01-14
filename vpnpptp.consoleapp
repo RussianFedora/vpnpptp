@@ -1,0 +1,3 @@
+PROGRAM=/usr/sbin/vpnpptp
+SESSION=true
+. config-util
