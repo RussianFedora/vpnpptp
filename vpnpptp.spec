@@ -10,13 +10,13 @@ Summary: Tools for setup and control VPN via PPTP/L2TP
 Summary(ru): Инструмент для установки и управления соединением VPN через PPTP/L2TP
 Summary(uk): Інструмент для встановлення та керування з'єднанням VPN через PPTP/L2TP
 Name: vpnpptp
-Version: 0.2.8
-Release: 4%{?dist}
+Version: 0.3.0
+Release: 1%{?dist}
 
 License: GPL2
 Group: System Environment/Base
 Url: http://code.google.com/p/vpnpptp
-Source0: %{name}-%{version}.tar.bz2
+Source0: http://vpnpptp.googlecode.com/files/%{name}-src-%{version}.tar.gz
 Source2: %{name}.desktop
 Source3: ponoff.desktop
 Source10: Makefiles.tar.bz2
@@ -28,7 +28,6 @@ Source200: vpnpptp.pam
 Source201: vpnpptp.consoleapp
 Source202: ponoff.pam
 Source203: ponoff.consoleapp
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: fpc-src >= 2.2.4
 BuildRequires: fpc >= 2.2.4
@@ -37,6 +36,7 @@ BuildRequires: desktop-file-utils
 
 Requires: pptp
 Requires: xl2tpd
+Requires: usermode-gtk
 
 
 %description
@@ -54,7 +54,7 @@ VPN через PPTP/L2TP
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-src-%{version}
 
 tar xf %{SOURCE10}
 for ext in pas lpi; do
@@ -62,13 +62,14 @@ for ext in pas lpi; do
 done;
 
 %build
-make VERBOSE=1 %{?_smp_mflags} \
-	LIBDIRPART=%{libdirpart} \
-	INSTALL_ROOT=$RPM_BUILD_ROOT/usr \
-	MACHINE_ARCH=%{fpc_arch}
+./mandriva.compile.sh %{fpc_arch} %{libdirpart}
+
+#make VERBOSE=1 %{?_smp_mflags} \
+#	LIBDIRPART=%{libdirpart} \
+#	INSTALL_ROOT=$RPM_BUILD_ROOT/usr \
+#	MACHINE_ARCH=%{fpc_arch}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make LIBDIRPART=%{libdirpart} \
 	INSTALL_ROOT=$RPM_BUILD_ROOT/usr \
 	LIBDIR=$RPM_BUILD_ROOT/%{_libdir} \
@@ -110,9 +111,6 @@ update-desktop-database -q
 update-desktop-database -q
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
 %defattr(-,root, root)
 %doc LICENSE.txt README.txt
@@ -136,6 +134,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 19 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 0.3.0-1
+- update to 0.3.0
+
+* Mon Jan 24 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 0.2.8-5
+- add R: usermode-gtk
+
 * Fri Jan 14 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 0.2.8-4
 - create /var/lib/vpnpptp dir
 
