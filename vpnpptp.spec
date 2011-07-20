@@ -37,7 +37,7 @@ BuildRequires: desktop-file-utils
 Requires: pptp
 Requires: xl2tpd >= 1.2.7
 Requires: usermode-gtk
-Requires: open2ltp
+Requires: openl2tp
 
 
 %description
