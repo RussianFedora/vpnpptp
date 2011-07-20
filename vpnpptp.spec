@@ -10,7 +10,7 @@ Summary: Tools for setup and control VPN via PPTP/L2TP
 Summary(ru): Инструмент для установки и управления соединением VPN через PPTP/L2TP
 Summary(uk): Інструмент для встановлення та керування з'єднанням VPN через PPTP/L2TP
 Name: vpnpptp
-Version: 0.3.2
+Version: 0.3.3
 Release: 1%{?dist}.R
 
 License: GPL2
@@ -29,14 +29,15 @@ Source201: vpnpptp.consoleapp
 Source202: ponoff.pam
 Source203: ponoff.consoleapp
 
-BuildRequires: fpc-src >= 2.2.4
-BuildRequires: fpc >= 2.2.4
-BuildRequires: lazarus
+BuildRequires: fpc-src >= 2.4.2
+BuildRequires: fpc >= 2.4.2
+BuildRequires: lazarus >= 0.9.29
 BuildRequires: desktop-file-utils
 
 Requires: pptp
 Requires: xl2tpd
 Requires: usermode-gtk
+Requires: open2ltp
 
 
 %description
@@ -134,6 +135,9 @@ update-desktop-database -q
 
 
 %changelog
+* Wed Jul 20 2011 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.3-1.R
+- update to 0.3.3
+
 * Mon Jun 20 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 0.3.2-1.R
 - update to 0.3.2
 
