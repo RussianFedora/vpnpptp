@@ -6,38 +6,38 @@
 %define fpc_arch i386
 %endif
 
-Summary: Tools for setup and control VPN via PPTP/L2TP
-Summary(ru): Инструмент для установки и управления соединением VPN через PPTP/L2TP
-Summary(uk): Інструмент для встановлення та керування з'єднанням VPN через PPTP/L2TP
-Name: vpnpptp
-Version: 0.3.3
-Release: 2%{?dist}.R
+Summary:        Tools for setup and control VPN via PPTP/L2TP
+Summary(ru):    Инструмент для установки и управления соединением VPN через PPTP/L2TP
+Summary(uk):    Інструмент для встановлення та керування з'єднанням VPN через PPTP/L2TP
+Name:           vpnpptp
+Version:        0.3.3
+Release:        2%{?dist}.R
 
-License: GPL2
-Group: System Environment/Base
-Url: http://code.google.com/p/vpnpptp
-Source0: http://vpnpptp.googlecode.com/files/%{name}-src-%{version}.tar.gz
-Source2: %{name}.desktop
-Source3: ponoff.desktop
-Source10: Makefiles.tar.bz2
-Source100: make_source.sh
-Source101: change-opt.sh
+License:        GPL2
+Group:          System Environment/Base
+Url:            http://code.google.com/p/vpnpptp
+Source0:        http://vpnpptp.googlecode.com/files/%{name}-src-%{version}.tar.gz
+Source2:        %{name}.desktop
+Source3:        ponoff.desktop
+Source10:       Makefiles.tar.bz2
+Source100:      make_source.sh
+Source101:      change-opt.sh
 
 # root auth
-Source200: vpnpptp.pam
-Source201: vpnpptp.consoleapp
-Source202: ponoff.pam
-Source203: ponoff.consoleapp
+Source200:      vpnpptp.pam
+Source201:      vpnpptp.consoleapp
+Source202:      ponoff.pam
+Source203:      ponoff.consoleapp
 
-BuildRequires: fpc-src >= 2.4.2
-BuildRequires: fpc >= 2.4.2
-BuildRequires: lazarus >= 0.9.29
-BuildRequires: desktop-file-utils
+BuildRequires:  fpc-src >= 2.4.2
+BuildRequires:  fpc >= 2.4.2
+BuildRequires:  lazarus >= 0.9.29
+BuildRequires:  desktop-file-utils
 
-Requires: pptp
-Requires: xl2tpd >= 1.2.7
-Requires: usermode-gtk
-Requires: open2ltp
+Requires:       pptp
+Requires:       xl2tpd >= 1.2.7
+Requires:       usermode-gtk
+Requires:       open2ltp
 
 
 %description
@@ -65,27 +65,23 @@ done;
 %build
 ./mandriva.compile.sh %{fpc_arch} %{libdirpart}
 
-#make VERBOSE=1 %{?_smp_mflags} \
-#	LIBDIRPART=%{libdirpart} \
-#	INSTALL_ROOT=$RPM_BUILD_ROOT/usr \
-#	MACHINE_ARCH=%{fpc_arch}
 
 %install
 make LIBDIRPART=%{libdirpart} \
-	INSTALL_ROOT=$RPM_BUILD_ROOT/usr \
-	LIBDIR=$RPM_BUILD_ROOT/%{_libdir} \
-	DATADIR=$RPM_BUILD_ROOT/%{_datadir}/%{name} \
-	BINDIR=$RPM_BUILD_ROOT/%{_bindir} \
-	MACHINE_ARCH=%{fpc_arch} install
+    INSTALL_ROOT=$RPM_BUILD_ROOT/usr \
+    LIBDIR=$RPM_BUILD_ROOT/%{_libdir} \
+    DATADIR=$RPM_BUILD_ROOT/%{_datadir}/%{name} \
+    BINDIR=$RPM_BUILD_ROOT/%{_bindir} \
+    MACHINE_ARCH=%{fpc_arch} install
 
 install -dD $RPM_BUILD_ROOT/%{_sysconfdir}/{pam.d,security/console.apps}
 install -m644 %{SOURCE200} $RPM_BUILD_ROOT/%{_sysconfdir}/pam.d/%{name}
 install -m644 %{SOURCE202} $RPM_BUILD_ROOT/%{_sysconfdir}/pam.d/ponoff
 
 install -m644 %{SOURCE201} \
-	$RPM_BUILD_ROOT/%{_sysconfdir}/security/console.apps/%{name}
+    $RPM_BUILD_ROOT/%{_sysconfdir}/security/console.apps/%{name}
 install -m644 %{SOURCE203} \
-	$RPM_BUILD_ROOT/%{_sysconfdir}/security/console.apps/ponoff
+    $RPM_BUILD_ROOT/%{_sysconfdir}/security/console.apps/ponoff
 
 install -dD $RPM_BUILD_ROOT/%{_localstatedir}/lib/%{name}
 
@@ -95,13 +91,13 @@ ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/%{name}
 ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/ponoff
 
 desktop-file-install \
-	--dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
-	%{SOURCE2}
+    --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
+    %{SOURCE2}
 
 desktop-file-install \
-	--remove-category=X-MandrivaLinux-CrossDesktop \
-	--dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
-	%{SOURCE3}
+    --remove-category=X-MandrivaLinux-CrossDesktop \
+    --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
+    %{SOURCE3}
 
 
 %post
