@@ -11,7 +11,7 @@ Summary(ru):    Инструмент для установки и управле
 Summary(uk):    Інструмент для встановлення та керування з'єднанням VPN через PPTP/L2TP
 Name:           vpnpptp
 Version:        0.3.3
-Release:        2%{?dist}.R
+Release:        2%{?dist}
 
 License:        GPL2
 Group:          System Environment/Base
