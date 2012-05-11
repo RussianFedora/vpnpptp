@@ -6,9 +6,8 @@ Summary(ru):    Инструмент для установки и управле
 Summary(uk):    Інструмент для встановлення та керування VPN через PPTP/L2TP/OpenL2TP
 
 License:        GPLv2
-Group:          System/Configuration/Networking
+Group:          Applications/System
 Url:            http://code.google.com/p/vpnpptp
-
 Source0:        http://vpnpptp.googlecode.com/files/%{name}-src-%{version}.tar.gz
 
 
