@@ -1,138 +1,141 @@
-%ifarch x86_64
-%define libdirpart lib64
-%define fpc_arch x86_64
-%else
-%define libdirpart lib
-%define fpc_arch i386
-%endif
-
-Summary:        Tools for setup and control VPN via PPTP/L2TP
-Summary(ru):    Инструмент для установки и управления соединением VPN через PPTP/L2TP
-Summary(uk):    Інструмент для встановлення та керування з'єднанням VPN через PPTP/L2TP
 Name:           vpnpptp
 Version:        0.3.4
-Release:        1%{?dist}
+Release:        2%{?dist}
+Summary:        Tools for setup and control VPN via PPTP/L2TP/OpenL2TP
+Summary(ru):    Инструмент для установки и управления VPN через PPTP/L2TP/OpenL2TP
+Summary(uk):    Інструмент для встановлення та керування VPN через PPTP/L2TP/OpenL2TP
 
-License:        GPL2
-Group:          System Environment/Base
+License:        GPLv2
+Group:          System/Configuration/Networking
 Url:            http://code.google.com/p/vpnpptp
-Source0:        http://vpnpptp.googlecode.com/files/%{name}-src-%{version}.tar.gz
-Source2:        %{name}.desktop
-Source3:        ponoff.desktop
-Source10:       Makefiles.tar.bz2
-Source100:      make_source.sh
-Source101:      change-opt.sh
 
-# root auth
-Source200:      vpnpptp.pam
-Source201:      vpnpptp.consoleapp
-Source202:      ponoff.pam
-Source203:      ponoff.consoleapp
+Source0:        http://vpnpptp.googlecode.com/files/%{name}-src-%{version}.tar.gz
+
 
 BuildRequires:  fpc-src >= 2.4.2
 BuildRequires:  fpc >= 2.4.2
 BuildRequires:  lazarus >= 0.9.30
-BuildRequires:  desktop-file-utils
 
+Requires:       xroot
 Requires:       pptp
 Requires:       xl2tpd >= 1.2.7
-Requires:       usermode-gtk
 Requires:       openl2tp
-Requires:       xroot
-
 
 %description
-Tools for easy and quick setup and control VPN via PPTP/L2TP
-
+Tools for easy and quick setup and control VPN via PPTP/L2TP/OpenL2TP
 
 %description -l ru
 Инструмент для легкого и быстрого подключения и управления соединением
-VPN через PPTP/L2TP
-
+VPN через PPTP/L2TP/OpenL2TP
 
 %description -l uk
 Інструмент для легкого і швидкого підключення і керування з'єднанням
-VPN через PPTP/L2TP
-
+VPN через PPTP/L2TP/OpenL2TP
 
 %prep
 %setup -q -n %{name}-src-%{version}
 
-tar xf %{SOURCE10}
-for ext in pas lpi; do
-    find . -type f -name *.${ext} -exec sh %{SOURCE101} {} \;
-done;
-
 %build
-./mandriva.compile.sh %{fpc_arch} %{libdirpart}
-
+%ifarch x86_64
+    ./mandriva.compile.sh x86_64 lib64
+%else
+    ./mandriva.compile.sh i386 lib
+%endif
 
 %install
-make LIBDIRPART=%{libdirpart} \
-    INSTALL_ROOT=$RPM_BUILD_ROOT/usr \
-    LIBDIR=$RPM_BUILD_ROOT/%{_libdir} \
-    DATADIR=$RPM_BUILD_ROOT/%{_datadir}/%{name} \
-    BINDIR=$RPM_BUILD_ROOT/%{_bindir} \
-    MACHINE_ARCH=%{fpc_arch} install
+rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_datadir}/vpnpptp
+mkdir -p %{buildroot}%{_datadir}/vpnpptp/scripts
+mkdir -p %{buildroot}%{_datadir}/vpnpptp/wiki
+mkdir -p %{buildroot}%{_datadir}/vpnpptp/lang
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_datadir}/applications
+mkdir -p %{buildroot}%{_datadir}/pixmaps
 
-install -dD $RPM_BUILD_ROOT/%{_sysconfdir}/{pam.d,security/console.apps}
-install -m644 %{SOURCE200} $RPM_BUILD_ROOT/%{_sysconfdir}/pam.d/%{name}
-install -m644 %{SOURCE202} $RPM_BUILD_ROOT/%{_sysconfdir}/pam.d/ponoff
+cp -f ./vpnpptp/vpnpptp %{buildroot}%{_bindir}
+cp -f ./ponoff/ponoff %{buildroot}%{_bindir}
+cp -f ./ponoff.png %{buildroot}%{_datadir}/pixmaps/
+cp -f ./vpnpptp.png %{buildroot}%{_datadir}/pixmaps/
+chmod 0644 %{buildroot}%{_datadir}/pixmaps/ponoff.png
+chmod 0644 %{buildroot}%{_datadir}/pixmaps/vpnpptp.png
+cp -f ./*.ico %{buildroot}%{_datadir}/vpnpptp
+cp -f ./vpnlinux %{buildroot}%{_bindir}
+cp -rf ./scripts %{buildroot}%{_datadir}/vpnpptp/
+cp -rf ./wiki %{buildroot}%{_datadir}/vpnpptp/
+cp -rf ./lang %{buildroot}%{_datadir}/vpnpptp/
 
-install -m644 %{SOURCE201} \
-    $RPM_BUILD_ROOT/%{_sysconfdir}/security/console.apps/%{name}
-install -m644 %{SOURCE203} \
-    $RPM_BUILD_ROOT/%{_sysconfdir}/security/console.apps/ponoff
+install -dm 755 %{buildroot}%{_datadir}/applications
+cat > ponoff.desktop << EOF
+#!/usr/bin/env xdg-open
 
-install -dD $RPM_BUILD_ROOT/%{_localstatedir}/lib/%{name}
+[Desktop Entry]
+Encoding=UTF-8
+GenericName=VPN PPTP/L2TP/OpenL2TP Control
+GenericName[ru]=Управление соединением VPN PPTP/L2TP/OpenL2TP
+GenericName[uk]=Керування з'єднанням VPN PPTP/L2TP/OpenL2TP
+Name=ponoff
+Name[ru]=ponoff
+Name[uk]=ponoff
+Exec=/usr/bin/ponoff
+Comment=Control VPN via PPTP/L2TP/OpenL2TP
+Comment[ru]=Управление соединением VPN через PPTP/L2TP/OpenL2TP
+Comment[uk]=Керування з'єднанням VPN через PPTP/L2TP/OpenL2TP
+Icon=/usr/share/pixmaps/ponoff.png
+Type=Application
+Categories=GTK;System;Network;Monitor;X-MandrivaLinux-CrossDesktop;
+X-KDE-autostart-after=kdesktop
+StartupNotify=false
+EOF
+install -m 0644 ponoff.desktop \
+%{buildroot}%{_datadir}/applications/ponoff.desktop
 
-install -dD $RPM_BUILD_ROOT/%{_sbindir}
-mv $RPM_BUILD_ROOT/%{_bindir}/* $RPM_BUILD_ROOT/%{_sbindir}
-ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/%{name}
-ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/ponoff
+install -dm 755 %{buildroot}%{_datadir}/applications
+cat > vpnpptp.desktop << EOF
+#!/usr/bin/env xdg-open
 
-desktop-file-install \
-    --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
-    %{SOURCE2}
+[Desktop Entry]
+Encoding=UTF-8
+GenericName=VPN PPTP/L2TP/OpenL2TP Setup
+GenericName[ru]=Настройка соединения VPN PPTP/L2TP/OpenL2TP
+GenericName[uk]=Налаштування з’єднання VPN PPTP/L2TP/OpenL2TP
+Name=vpnpptp
+Name[ru]=vpnpptp
+Name[uk]=vpnpptp
+Exec=/usr/bin/vpnpptp
+Comment=Setup VPN via PPTP/L2TP/OpenL2TP
+Comment[ru]=Настройка соединения VPN PPTP/L2TP/OpenL2TP
+Comment[uk]=Налаштування з’єднання VPN PPTP/L2TP/OpenL2TP
+Icon=/usr/share/pixmaps/vpnpptp.png
+Type=Application
+Categories=GTK;System;Network;Monitor;X-MandrivaLinux-CrossDesktop;
+StartupNotify=false
+EOF
+install -m 0644 vpnpptp.desktop \
+%{buildroot}%{_datadir}/applications/vpnpptp.desktop
 
-desktop-file-install \
-    --remove-category=X-MandrivaLinux-CrossDesktop \
-    --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
-    %{SOURCE3}
-
-
-%post
-update-desktop-database -q
-
-
-%postun
-update-desktop-database -q
-
+%clean
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root, root)
-%doc LICENSE.txt README.txt
-%attr(0644,root,root) %config %{_sysconfdir}/pam.d/%{name}
-%attr(0644,root,root) %config %{_sysconfdir}/security/console.apps/%{name}
-%attr(0644,root,root) %config %{_sysconfdir}/pam.d/ponoff
-%attr(0644,root,root) %config %{_sysconfdir}/security/console.apps/ponoff
-%{_bindir}/%{name}
-%{_bindir}/ponoff
-%{_sbindir}/%{name}
-%{_sbindir}/ponoff
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/*.ico
-%{_datadir}/%{name}/*.png
-%{_datadir}/%{name}/scripts
-%{_datadir}/%{name}/wiki/*
-%{_datadir}/%{name}/lang/*
-%{_datadir}/pixmaps/*.png
-%{_datadir}/applications/*.desktop
-%{_localstatedir}/lib/%{name}
 
+%{_bindir}/vpnpptp
+%{_bindir}/ponoff
+%{_bindir}/vpnlinux
+%{_datadir}/vpnpptp/lang
+%{_datadir}/pixmaps/ponoff.png
+%{_datadir}/pixmaps/vpnpptp.png
+%{_datadir}/vpnpptp/*.ico
+%{_datadir}/vpnpptp/scripts
+%{_datadir}/vpnpptp/wiki
+%{_datadir}/applications/ponoff.desktop
+%{_datadir}/applications/vpnpptp.desktop
 
 %changelog
-* Tue Apr 17 2012 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.4-1.R
+* Tue May 11 2012 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.4-2.R
+- clean spec
+
+* Tue Apr 19 2012 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.4-1.R
 - update to 0.3.4
 
 * Wed Jul 20 2011 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.3-3.R
