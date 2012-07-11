@@ -1,6 +1,6 @@
 Name:           vpnpptp
-Version:        0.3.4
-Release:        2%{?dist}
+Version:        0.3.5
+Release:        1%{?dist}
 Summary:        Tools for setup and control VPN via PPTP/L2TP/OpenL2TP
 Summary(ru):    Инструмент для установки и управления VPN через PPTP/L2TP/OpenL2TP
 Summary(uk):    Інструмент для встановлення та керування VPN через PPTP/L2TP/OpenL2TP
@@ -131,6 +131,9 @@ rm -rf %{buildroot}
 %{_datadir}/applications/vpnpptp.desktop
 
 %changelog
+* Wed Jul 11 2012 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.5-1.R
+- update to 0.3.5
+
 * Tue May 11 2012 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.4-2.R
 - clean spec
 
